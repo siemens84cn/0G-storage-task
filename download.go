@@ -1,10 +1,14 @@
 package main
 
 import (
+	"log"
+	"os"
+	"strings"
 	"context"
 
 	"github.com/joho/godotenv"
-
+	"github.com/0gfoundation/0g-storage-client/common/blockchain"
+	"github.com/0gfoundation/0g-storage-client/indexer"
 
 )
 
@@ -31,25 +35,10 @@ func main()  {
 
 	roots := os.Getenv("ROOTS")
 
-	downloader, err := transfer.newDownloader(ctx, )
-	if err != nil {
-		log.Fatal("Failed to initialize downloader: %v", err)
+	if err := indexerClient.DownloadFragments(ctx, strings.Split(roots, ","), "copy-report.pdf", true); err != nil {
+		log.Fatalf("Download file error: %v", err)
 	}
 
-
-	log.Printf("Begin to download file ...\n")
-	clients := node.MustNewZgsClients(args.nodes, providerOption)
-	closer := func() {
-		for _, client := range clients {
-			client.Close()
-		}
-	}
-
-	downloader, err := transfer.NewDownloader(clients, common.LogOption{Logger: logrus.StandardLogger()})
-	if err != nil {
-		closer()
-		return nil, nil, err
-	}
-	downloader.WithRoutines(downloadArgs.routines)
+	log.Printf("Download file successfully!\n")
 	
 }
